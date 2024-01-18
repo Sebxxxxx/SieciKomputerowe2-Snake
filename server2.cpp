@@ -147,13 +147,27 @@ void update_snake_position(Snake& snake) {
 }
 
 
-int check_collision(Snake& snake) {
-    std::pair<int, int> head = snake.body.front();
-    for (size_t i = 1; i < snake.body.size(); i++) {
+bool check_collision(const Snake& snake) {
+    const std::pair<int, int>& head = snake.body.front();
+
+  
+    for (size_t i = 1; i < snake.body.size(); ++i) {
         if (head == snake.body[i]) {
             return true;
         }
     }
+
+    
+    for (const auto& other_snake : snakes) {
+        if (&other_snake == &snake) continue; 
+
+        for (const auto& segment : other_snake.body) {
+            if (head == segment) {
+                return true;
+            }
+        }
+    }
+
     return false;
 }
 
