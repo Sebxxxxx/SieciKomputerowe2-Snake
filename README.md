@@ -72,7 +72,7 @@ Gdy gra się zakończy, serwer wysyła komunikat "Game Over"
                 std::lock_guard<std::mutex> lock(clients_mutex);
                 update_snake_position(snakes[player_id]);
                 if (check_collision(snakes[player_id])) {
-                    std::cout << "Player " << player_id + 1 << " lost." << std::endl;
+                    std::cout << " Player " << player_id + 1 << " lost." << std::endl;
                     std::string game_over_message = "Game Over. Player " + std::to_string(player_id + 1) + " lost.";
                     for (int client : clients) {
                         send(client, game_over_message.c_str(), game_over_message.size(), 0);
