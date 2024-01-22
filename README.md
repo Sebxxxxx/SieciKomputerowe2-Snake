@@ -34,12 +34,12 @@ Aby uruchomić serwer, potrzebujesz następujących środowisk i narzędzi:
 
 4. **Rozpoczęcie gry:** Po pomyślnym połączeniu obu graczy, gra rozpocznie się automatycznie.
 
-##Komunikacja siecowa
+# Komunikacja siecowa
 Serwer i klient komunikują się za pomocą gniazd TCP/IP. 
 Klient wysyła ruchy gracza do serwera, a serwer wysyła stan gry do klientów. 
 Gdy gra się zakończy, serwer wysyła komunikat "Game Over"
 
-*Serwer
+## Serwer
 -Serwer jest uruchamiany na adresie IP "192.168.3.40" i porcie 10155.
 -Serwer nasłuchuje na tym porcie na przychodzące połączenia od klientów.
 -Gdy klient nawiąże połączenie, serwer przyjmuje je i tworzy nowy wątek, który obsługuje tego klienta.
@@ -50,7 +50,7 @@ Gdy gra się zakończy, serwer wysyła komunikat "Game Over"
 -Wątek handle_client również odbiera stan gry od serwera i wyświetla go na ekranie klienta.
 -Jeśli któryś z graczy przegra, serwer wysyła komunikat "Game Over" do klientów, a gra zostaje zakończona.
 
-*Klient
+## Klient
 -Klient łączy się z serwerem na adresie IP "192.168.3.40" i porcie 10155.
 -Klient tworzy wątek receive_messages, który jest odpowiedzialny za odbieranie wiadomości od serwera.
 -Wątek receive_messages odbiera dane od serwera za pomocą funkcji recv. Jeśli dane zawierają komunikat "Game Over", to wyświetla go na ekranie i kończy odbieranie wiadomości.
