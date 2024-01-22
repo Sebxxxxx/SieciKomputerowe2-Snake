@@ -34,6 +34,29 @@ Aby uruchomić serwer, potrzebujesz następujących środowisk i narzędzi:
 
 4. **Rozpoczęcie gry:** Po pomyślnym połączeniu obu graczy, gra rozpocznie się automatycznie.
 
+##Komunikacja siecowa
+Serwer i klient komunikują się za pomocą gniazd TCP/IP. 
+Klient wysyła ruchy gracza do serwera, a serwer wysyła stan gry do klientów. 
+Gdy gra się zakończy, serwer wysyła komunikat "Game Over"
+
+#Serwer
+-Serwer jest uruchamiany na adresie IP "192.168.3.40" i porcie 10155.
+-Serwer nasłuchuje na tym porcie na przychodzące połączenia od klientów.
+-Gdy klient nawiąże połączenie, serwer przyjmuje je i tworzy nowy wątek, który obsługuje tego klienta.
+-Każdy klient jest reprezentowany przez wątek handle_client.
+-Wątek handle_client początkowo wysyła komunikat do klienta, informując go, że oczekuje na drugiego gracza, jeśli jest to pierwszy klient.
+-Następnie wątek handle_client czeka na połączenie drugiego gracza i inicjalizuje grę, wysyłając komunikat o rozpoczęciu gry.
+-Wątek handle_client nasłuchuje na ruch gracza (strzałki w górę, w dół, w lewo, w prawo) i przekazuje te ruchy do serwera za pomocą funkcji send.
+-Wątek handle_client również odbiera stan gry od serwera i wyświetla go na ekranie klienta.
+-Jeśli któryś z graczy przegra, serwer wysyła komunikat "Game Over" do klientów, a gra zostaje zakończona.
+
+#Klient
+-Klient łączy się z serwerem na adresie IP "192.168.3.40" i porcie 10155.
+-Klient tworzy wątek receive_messages, który jest odpowiedzialny za odbieranie wiadomości od serwera.
+-Wątek receive_messages odbiera dane od serwera za pomocą funkcji recv. Jeśli dane zawierają komunikat "Game Over", to wyświetla go na ekranie i kończy odbieranie wiadomości.
+-W przeciwnym przypadku wątek receive_messages czyszczy ekran i wyświetla aktualny stan gry.
+-W głównym wątku klienta oczekuje na naciśnięcie klawiszy przez gracza (_kbhit). Jeśli gracz naciśnie klawisze WSAD, to klient wysyła odpowiednią komendę do serwera za pomocą funkcji send.
+
 ## Znane problemy i ograniczenia
 
 - Obecnie nie ma wsparcia dla graficznego interfejsu użytkownika; gra jest prezentowana w konsoli.
