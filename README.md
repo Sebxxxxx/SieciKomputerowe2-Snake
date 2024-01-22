@@ -50,6 +50,66 @@ Gdy gra się zakończy, serwer wysyła komunikat "Game Over"
 - Wątek handle_client również odbiera stan gry od serwera i wyświetla go na ekranie klienta.
 - Jeśli któryś z graczy przegra, serwer wysyła komunikat "Game Over" do klientów, a gra zostaje zakończona.
 
+
+```bash
+  void handle_client(int client_socket, int player_id) {
+    if (player_id % 2 == 1 ) {
+        std::string start_message = "Waiting for the other player to join...";
+        send(client_socket, start_message.c_str(), start_message.size(), 0);
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    for (int i = 3; i > 0; i--) {
+        std::string count_message = std::to_string(i);
+        send(client_socket, count_message.c_str(), count_message.size(), 0);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+
+    std::thread snake_thread([&]() {
+        while (true) {
+            {
+                std::lock_guard<std::mutex> lock(clients_mutex);
+                update_snake_position(snakes[player_id]);
+                if (check_collision(snakes[player_id])) {
+                    std::cout << "Player " << player_id + 1 << " lost." << std::endl;
+                    std::string game_over_message = "Game Over. Player " + std::to_string(player_id + 1) + " lost.";
+                    for (int client : clients) {
+                        send(client, game_over_message.c_str(), game_over_message.size(), 0);
+                    }
+                    return;
+                }
+                update_game_state();
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        }
+    });
+    snake_thread.detach();
+
+    std::string waiting_message = "Waiting for the other player to join...";
+    send(client_socket, waiting_message.c_str(), waiting_message.size(), 0);
+
+  
+    initialize_game(client_socket, -1);
+
+    while (true) {
+        memset(buffer, 0, sizeof(buffer));
+        int read = recv(client_socket, buffer, sizeof(buffer), 0);
+        if (read <= 0) break;
+
+        {
+            std::lock_guard<std::mutex> lock(clients_mutex);
+            if (buffer[0] == 'U' || buffer[0] == 'D' || buffer[0] == 'L' || buffer[0] == 'R') {
+                snakes[player_id].direction = buffer[0];
+            }
+        }
+    }
+    close(client_socket);
+}
+
+```
+
+
 ## Klient
 - Klient łączy się z serwerem na adresie IP "192.168.3.40" i porcie 10155.
 - Klient tworzy wątek receive_messages, który jest odpowiedzialny za odbieranie wiadomości od serwera.
