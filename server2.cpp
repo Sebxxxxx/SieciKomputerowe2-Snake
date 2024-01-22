@@ -231,8 +231,7 @@ void handle_client(int client_socket, int player_id) {
     });
     snake_thread.detach();
 
-    std::string waiting_message = "Waiting for the other player to join...";
-    send(client_socket, waiting_message.c_str(), waiting_message.size(), 0);
+    
 
   
     initialize_game(client_socket, -1);
