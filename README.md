@@ -124,12 +124,12 @@ void receive_messages(SOCKET sock) {
         int read = recv(sock, buffer, sizeof(buffer), 0);
         if (read <= 0) break;
 
-        // Wyświetlanie aktualnego stanu gry
+       
         
         if (std::string(buffer).find(
             "Game Over") != std::string::npos) {
-            std::cout << buffer << std::endl; // Wyświetlamy komunikat o przegranej
-        break; // Kończymy pętlę odbierania wiadomości
+            std::cout << buffer << std::endl; 
+        break;
     }
         system("cls");
         std::cout << buffer << std::endl;
