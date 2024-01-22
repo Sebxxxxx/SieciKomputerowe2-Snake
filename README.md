@@ -116,6 +116,26 @@ Gdy gra się zakończy, serwer wysyła komunikat "Game Over"
 - Wątek receive_messages odbiera dane od serwera za pomocą funkcji recv. Jeśli dane zawierają komunikat "Game Over", to wyświetla go na ekranie i kończy odbieranie wiadomości.
 - W przeciwnym przypadku wątek receive_messages czyszczy ekran i wyświetla aktualny stan gry.
 - W głównym wątku klienta oczekuje na naciśnięcie klawiszy przez gracza (_kbhit). Jeśli gracz naciśnie klawisze WSAD, to klient wysyła odpowiednią komendę do serwera za pomocą funkcji send.
+```bash
+void receive_messages(SOCKET sock) {
+    char buffer[4096];
+    while (true) {
+        memset(buffer, 0, sizeof(buffer));
+        int read = recv(sock, buffer, sizeof(buffer), 0);
+        if (read <= 0) break;
+
+        // Wyświetlanie aktualnego stanu gry
+        
+        if (std::string(buffer).find(
+            "Game Over") != std::string::npos) {
+            std::cout << buffer << std::endl; // Wyświetlamy komunikat o przegranej
+        break; // Kończymy pętlę odbierania wiadomości
+    }
+        system("cls");
+        std::cout << buffer << std::endl;
+    }
+}
+```
 
 ## Znane problemy i ograniczenia
 
